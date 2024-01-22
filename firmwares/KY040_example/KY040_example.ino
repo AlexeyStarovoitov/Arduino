@@ -1,7 +1,7 @@
 #include <Arduino.h> 
 #include <KY040.h> 
 
-#define PIN_CLK 12                         // Указываем к какому выводу CLK энкодер подключен к Arduino
+#define PIN_CLK 10                         // Указываем к какому выводу CLK энкодер подключен к Arduino
 #define PIN_DT 9                          // Указываем к какому выводу DT энкодер подключен к Arduino
 #define PIN_SW 8                          // Указываем к какому выводу SW энкодер подключен к Arduino
 
