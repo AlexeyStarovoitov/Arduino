@@ -1,10 +1,4 @@
-﻿/*
- Библиотека для работы с генератором сигналов AD9833 по интерфуйсу SPI
- Разработано Egor 'Nich1con' Zakharov
- V1.0 от 11.11.2020
-*/
-
-#pragma once
+﻿#pragma once
 #include <Arduino.h>
 
 
@@ -26,10 +20,6 @@ class KY040 {
     ButtonState check_button_state(void);
 	RotateDirection check_rotate_direction(void);
    private:
-    void writeFreqReg(bool reg, uint32_t data);
-    void writePhaseReg(bool reg, uint16_t data);
-    void writeCfgReg();
-    void writeReg(uint16_t data);
     uint8_t _clk_pin = 0;
 	uint8_t _dt_pin = 0;
 	uint8_t _sw_pin = 0;
@@ -74,26 +64,12 @@ KY040::RotateDirection KY040::check_rotate_direction(void)
 	int _current_clk_pin_state = digitalRead(_clk_pin); // Считываем значение с CLK
 	int _current_dt_pin_state = digitalRead(_dt_pin);
 	// Проверяем изменилось ли состояние CLK
-	if (_current_clk_pin_state != _last_clk_pin_state)
+	if (_current_clk_pin_state != _last_clk_pin_state && _current_clk_pin_state)
 	{
-		switch(_current_clk_pin_state)
-		{
-			case LOW:
-			{
-				if (_current_dt_pin_state != _current_clk_pin_state)
-					res = RotateDirection::COUNTER_CLOCKWISE_ROTATE_DIRECTION;
-			}
-			break;
-			case HIGH:
-			{
-				if (_current_dt_pin_state == _current_clk_pin_state)
-					res = RotateDirection::CLOCKWISE_ROTATE_DIRECTION;
-			}
-			break;
-			default:
-			break;
-			
-		}
+		if (_current_dt_pin_state != _current_clk_pin_state)
+			res = RotateDirection::CLOCKWISE_ROTATE_DIRECTION;
+		else
+			res = RotateDirection::COUNTER_CLOCKWISE_ROTATE_DIRECTION;
 	}
 	_last_clk_pin_state = _current_clk_pin_state;
 	return res;
