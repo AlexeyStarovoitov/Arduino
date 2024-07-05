@@ -3,17 +3,17 @@
 #include <LiquidCrystal.h>
 
 //KY040 pins
-constexpr uint8_t KY_PIN_CLK = 12;                         
-constexpr uint8_t KY_PIN_DT = 9;                          
-constexpr uint8_t KY_PIN_SW = 8; 
+constexpr uint8_t KY_PIN_CLK = A5;                         
+constexpr uint8_t KY_PIN_DT = A4;                          
+constexpr uint8_t KY_PIN_SW = A3; 
 
 // LCD pins
-constexpr uint8_t LCD_PIN_RS = 2;
-constexpr uint8_t LCD_PIN_EN = 3;
-constexpr uint8_t LCD_PIN_DB4 = 4;
-constexpr uint8_t LCD_PIN_DB5 = 5;
-constexpr uint8_t LCD_PIN_DB6 = 6;
-constexpr uint8_t LCD_PIN_DB7 = 7;
+constexpr uint8_t LCD_PIN_RS = 7;
+constexpr uint8_t LCD_PIN_EN = 6;
+constexpr uint8_t LCD_PIN_DB4 = 5;
+constexpr uint8_t LCD_PIN_DB5 = 4;
+constexpr uint8_t LCD_PIN_DB6 = 3;
+constexpr uint8_t LCD_PIN_DB7 = 2;
 
 //AD9833 pins
 constexpr uint8_t AD_PIN_CS = 10;
@@ -28,7 +28,7 @@ enum frequency_unit
 };
 
 struct {
-  unsigned int freq_coeff;
+  float freq_coeff;
   const char *freq_str;
 }freq_data[] = 
 {
@@ -150,7 +150,7 @@ void _update_generator(AD9833 *myGen, enum wave_shape wave_shape, float frequenc
 }
 
 unsigned long current_time;
-float frequency = 0.0;
+float frequency = 0;
 enum frequency_unit freq_unit = FREQUENCY_UNIT_HZ;
 enum menu_item menu_item = MENU_ITEM_WAVEFORM;
 enum wave_shape wave_shape = WAVEFORM_SINE;
@@ -169,6 +169,7 @@ void setup()
   lcd.begin(16, 2);
   myGen.begin();  
   encoder.begin();
+  Serial.begin(9600);
 
   _update_generator(&myGen, wave_shape, frequency);
   _update_display(&lcd, wave_shape, freq_unit, frequency);
@@ -203,7 +204,10 @@ void loop()
     }
 
     _update_display(&lcd, wave_shape, freq_unit, frequency);
-
+ #if 0   
+    Serial.println(frequency);
+    Serial.println(frequency/(float)freq_data[freq_unit].freq_coeff);
+  #endif
   }
   
 
